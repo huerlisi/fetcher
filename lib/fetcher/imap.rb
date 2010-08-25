@@ -9,12 +9,13 @@ module Fetcher
     protected
     
     # Additional Options:
-    # * <tt>:authentication</tt> - authentication type to use, defaults to PLAIN
+    # * <tt>:authentication</tt> - authentication type to use (defaults to PLAIN)
     # * <tt>:port</tt> - port to use (defaults to 143)
-    # * <tt>:ssl</tt> - use SSL to connect
-    # * <tt>:use_login</tt> - use LOGIN instead of AUTHENTICATE to connect (some IMAP servers, like GMail, do not support AUTHENTICATE)
+    # * <tt>:ssl</tt> - use SSL to connect (defaults to false)
+    # * <tt>:use_login</tt> - use LOGIN instead of AUTHENTICATE to connect (some IMAP servers, like GMail, do not support AUTHENTICATE) (defaults to false)
+    # * <tt>:in_folder</tt> - folder to work in (defaults to INBOX)
     # * <tt>:processed_folder</tt> - if set to the name of a mailbox, messages will be moved to that mailbox instead of deleted after processing. The mailbox will be created if it does not exist.
-    # * <tt>:error_folder:</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. Defaults to "bogus". The mailbox will be created if it does not exist.
+    # * <tt>:error_folder:</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. The mailbox will be created if it does not exist. (defaults to bogus)
     def initialize(options={})
       @authentication = options.delete(:authentication) || 'PLAIN'
       @port = options.delete(:port) || PORT
