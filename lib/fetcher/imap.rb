@@ -55,11 +55,11 @@ module Fetcher
         begin
           process_message(msg)
           add_to_processed_folder(uid) if @processed_folder
-          # Mark message as fetched
-          @connection.uid_store(uid, "+FLAGS", ['$fetched']) if @sync_messages
         rescue
           handle_bogus_message(msg)
         end
+        # Mark message as fetched
+        @connection.uid_store(uid, "+FLAGS", ['$fetched']) if @sync_messages
         # Mark message as deleted 
         @connection.uid_store(uid, "+FLAGS", [:Seen, :Deleted]) unless @keep_messages
       end
