@@ -7,7 +7,7 @@ module Daemon
 
   class Base
     def self.pid_fn
-      File.join(WorkingDirectory, "log", "#{name}.pid")
+      File.join(WorkingDirectory, "tmp", "pids", "#{name}.pid")
     end
     
     def self.daemonize
