@@ -56,6 +56,8 @@ module Fetcher
           process_message(msg)
           add_to_processed_folder(uid) if @processed_folder
         rescue
+          Rails.logger.info("Fetcher: Message processing failed:")
+          Rails.logger.info($!)
           handle_bogus_message(msg)
         end
         # Mark message as fetched
