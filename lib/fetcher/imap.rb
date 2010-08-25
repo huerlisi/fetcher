@@ -15,7 +15,7 @@ module Fetcher
     # * <tt>:use_login</tt> - use LOGIN instead of AUTHENTICATE to connect (some IMAP servers, like GMail, do not support AUTHENTICATE) (defaults to false)
     # * <tt>:in_folder</tt> - folder to work in (defaults to INBOX)
     # * <tt>:processed_folder</tt> - if set to the name of a mailbox, messages will be moved to that mailbox instead of deleted after processing. The mailbox will be created if it does not exist.
-    # * <tt>:error_folder:</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. The mailbox will be created if it does not exist. (defaults to bogus)
+    # * <tt>:error_folder</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. The mailbox will be created if it does not exist. (defaults to bogus)
     # * <tt>:keep_messages</tt> - don't delete messages (defaults to false)
     def initialize(options={})
       @authentication = options.delete(:authentication) || 'PLAIN'
