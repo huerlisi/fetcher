@@ -17,6 +17,7 @@ module Fetcher
     # * <tt>:processed_folder</tt> - if set to the name of a mailbox, messages will be moved to that mailbox instead of deleted after processing. The mailbox will be created if it does not exist.
     # * <tt>:error_folder</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. The mailbox will be created if it does not exist. (defaults to bogus)
     # * <tt>:keep_messages</tt> - don't delete messages (defaults to false)
+    # * <tt>:sync_messages</tt> - use IMAP flag to only fetch new mails (defaults to false, implies keep_messages = true)
     def initialize(options={})
       @authentication = options.delete(:authentication) || 'PLAIN'
       @port = options.delete(:port) || PORT
@@ -25,7 +26,8 @@ module Fetcher
       @in_folder = options.delete(:in_folder) || 'INBOX'
       @processed_folder = options.delete(:processed_folder)
       @error_folder = options.delete(:error_folder) || 'bogus'
-      @keep_messages = options.delete(:keep_messages)
+      @sync_messages = options.delete(:sync_messages)
+      @keep_messages = options.delete(:keep_messages) || @sync_messages
       super(options)
     end
     
@@ -46,11 +48,15 @@ module Fetcher
     # Retrieve messages from server
     def get_messages
       @connection.select(@in_folder)
-      @connection.uid_search(['ALL']).each do |uid|
+      # Fetch only un-fetched messages if sync_messages option is set, all otherwise
+      query = @sync_messages ? 'UNKEYWORD $fetched' : ['ALL']
+      @connection.uid_search(query).each do |uid|
         msg = @connection.uid_fetch(uid,'RFC822').first.attr['RFC822']
         begin
           process_message(msg)
           add_to_processed_folder(uid) if @processed_folder
+          # Mark message as fetched
+          @connection.uid_store(uid, "+FLAGS", ['$fetched']) if @sync_messages
         rescue
           handle_bogus_message(msg)
         end
