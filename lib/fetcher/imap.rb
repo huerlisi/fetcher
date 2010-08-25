@@ -16,6 +16,7 @@ module Fetcher
     # * <tt>:in_folder</tt> - folder to work in (defaults to INBOX)
     # * <tt>:processed_folder</tt> - if set to the name of a mailbox, messages will be moved to that mailbox instead of deleted after processing. The mailbox will be created if it does not exist.
     # * <tt>:error_folder:</tt> - the name of a mailbox where messages that cannot be processed (i.e., your receiver throws an exception) will be moved. The mailbox will be created if it does not exist. (defaults to bogus)
+    # * <tt>:keep_messages</tt> - don't delete messages (defaults to false)
     def initialize(options={})
       @authentication = options.delete(:authentication) || 'PLAIN'
       @port = options.delete(:port) || PORT
@@ -24,6 +25,7 @@ module Fetcher
       @in_folder = options.delete(:in_folder) || 'INBOX'
       @processed_folder = options.delete(:processed_folder)
       @error_folder = options.delete(:error_folder) || 'bogus'
+      @keep_messages = options.delete(:keep_messages)
       super(options)
     end
     
@@ -53,7 +55,7 @@ module Fetcher
           handle_bogus_message(msg)
         end
         # Mark message as deleted 
-        @connection.uid_store(uid, "+FLAGS", [:Seen, :Deleted])
+        @connection.uid_store(uid, "+FLAGS", [:Seen, :Deleted]) unless @keep_messages
       end
     end
     
